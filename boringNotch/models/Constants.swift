@@ -162,13 +162,16 @@ extension Defaults.Keys {
     // Option key modifier behaviour for media keys
     static let optionKeyAction = Key<OptionKeyAction>("optionKeyAction", default: OptionKeyAction.openSettings)
     
+    // MARK: Clipboard
+    static let enableClipboardHistory = Key<Bool>("enableClipboardHistory", default: true)
+
     // MARK: Shelf
     static let boringShelf = Key<Bool>("boringShelf", default: true)
     static let openShelfByDefault = Key<Bool>("openShelfByDefault", default: true)
     static let shelfTapToOpen = Key<Bool>("shelfTapToOpen", default: true)
     static let quickShareProvider = Key<String>("quickShareProvider", default: QuickShareProvider.defaultProvider.id)
     static let copyOnDrag = Key<Bool>("copyOnDrag", default: false)
-    static let autoRemoveShelfItems = Key<Bool>("autoRemoveShelfItems", default: false)
+    static let autoRemoveShelfItems = Key<Bool>("autoRemoveShelfItems", default: true)
     static let expandedDragDetection = Key<Bool>("expandedDragDetection", default: true)
     
     // MARK: Calendar
@@ -197,6 +200,9 @@ extension Defaults.Keys {
             return .nowPlaying
         }
     }
+
+    // MARK: Quick Launch
+    static let hiddenQuickLaunchApps = Key<[String]>("hiddenQuickLaunchApps", default: [])
 
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCache_v1", default: false)
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 
 struct TabModel: Identifiable {
     let id = UUID()
@@ -14,14 +15,26 @@ struct TabModel: Identifiable {
     let view: NotchViews
 }
 
-let tabs = [
+private let allTabs = [
     TabModel(label: "Home", icon: "house.fill", view: .home),
-    TabModel(label: "Shelf", icon: "tray.fill", view: .shelf)
+    TabModel(label: "Shelf", icon: "tray.fill", view: .shelf),
+    TabModel(label: "Clipboard", icon: "clipboard.fill", view: .clipboard)
 ]
 
 struct TabSelectionView: View {
     @ObservedObject var coordinator = BoringViewCoordinator.shared
+    @Default(.enableClipboardHistory) var enableClipboardHistory
     @Namespace var animation
+
+    private var tabs: [TabModel] {
+        allTabs.filter { tab in
+            if tab.view == .clipboard {
+                return enableClipboardHistory
+            }
+            return true
+        }
+    }
+
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tabs) { tab in

@@ -5002,6 +5002,9 @@
         }
       }
     },
+    "Choose which music apps appear in the quick launch grid when no music is playing." : {
+
+    },
     "Choose which service to use when sharing files from the shelf. Click the shelf button to select files, or drag files onto it to share immediately." : {
       "localizations" : {
         "ar" : {
@@ -5202,6 +5205,12 @@
         }
       }
     },
+    "Clear all" : {
+
+    },
+    "Clear Clipboard History" : {
+
+    },
     "Clear slot" : {
       "localizations" : {
         "ar" : {
@@ -5301,6 +5310,12 @@
           }
         }
       }
+    },
+    "Clipboard" : {
+
+    },
+    "Clipboard history empty" : {
+
     },
     "Close" : {
       "localizations" : {
@@ -6001,6 +6016,9 @@
           }
         }
       }
+    },
+    "Copy" : {
+
     },
     "Copy items on drag" : {
       "localizations" : {
@@ -7002,6 +7020,9 @@
         }
       }
     },
+    "Data" : {
+
+    },
     "Default" : {
       "localizations" : {
         "ar" : {
@@ -7101,6 +7122,9 @@
           }
         }
       }
+    },
+    "Delete" : {
+
     },
     "Description" : {
       "extractionState" : "stale",
@@ -8305,6 +8329,9 @@
           }
         }
       }
+    },
+    "Enable clipboard history" : {
+
     },
     "Enable colored spectrograms" : {
       "extractionState" : "stale",
@@ -13009,6 +13036,9 @@
         }
       }
     },
+    "Maximum of %lld apps can be shown at a time." : {
+
+    },
     "Media" : {
       "localizations" : {
         "ar" : {
@@ -13908,6 +13938,9 @@
           }
         }
       }
+    },
+    "Monitors your clipboard and keeps the last 50 copied items accessible from the notch." : {
+
     },
     "More" : {
       "localizations" : {
@@ -15010,6 +15043,9 @@
         }
       }
     },
+    "No music playing" : {
+
+    },
     "Not Now" : {
       "localizations" : {
         "ar" : {
@@ -15509,6 +15545,9 @@
           }
         }
       }
+    },
+    "Open a music app" : {
+
     },
     "Open Calendar Settings" : {
       "localizations" : {
@@ -16509,6 +16548,9 @@
           }
         }
       }
+    },
+    "Quick launch apps" : {
+
     },
     "Quick Share" : {
       "localizations" : {

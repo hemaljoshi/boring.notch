@@ -69,6 +69,9 @@ class BoringViewCoordinator: ObservableObject {
                     currentView = .home
                 }
             }
+            if currentView == .clipboard && !Defaults[.enableClipboardHistory] {
+                currentView = .home
+            }
         }
     }
 

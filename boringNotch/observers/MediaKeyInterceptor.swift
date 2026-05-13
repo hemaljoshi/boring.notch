@@ -101,8 +101,11 @@ final class MediaKeyInterceptor {
     // MARK: - Event Handling
     
     private func handleEvent(_ cgEvent: CGEvent) -> Unmanaged<CGEvent>? {
-        // Ensure the CGEvent has a valid type before converting to NSEvent
-        guard cgEvent.type != .null else {
+        // Validate the CGEvent type is within the valid range before converting to NSEvent.
+        // NSEvent(cgEvent:) asserts _type > 0 && _type <= kCGSLastEventType (roughly 0xFFFF).
+        // System event taps can occasionally deliver events with out-of-range types.
+        let rawType = cgEvent.type.rawValue
+        guard rawType > 0 && rawType < 0xFFFF else {
             return Unmanaged.passRetained(cgEvent)
         }
         guard let nsEvent = NSEvent(cgEvent: cgEvent),

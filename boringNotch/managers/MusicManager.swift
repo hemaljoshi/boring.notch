@@ -62,6 +62,18 @@ class MusicManager: ObservableObject {
     private var lastArtworkAlbum: String = "Self Love"
     private var lastArtworkBundleIdentifier: String? = nil
 
+    /// True when there is an active media session with real content.
+    /// Returns false only when no media is available at all (placeholder/empty metadata).
+    /// A paused song with real metadata is still considered an active session.
+    var hasActiveSession: Bool {
+        let placeholderTitles: Set<String> = ["I'm Handsome", "Not Playing", ""]
+        let placeholderArtists: Set<String> = ["Me", "Unknown", ""]
+        if placeholderTitles.contains(songTitle) && placeholderArtists.contains(artistName) {
+            return false
+        }
+        return true
+    }
+
     @Published var isFlipping: Bool = false
     private var flipWorkItem: DispatchWorkItem?
 

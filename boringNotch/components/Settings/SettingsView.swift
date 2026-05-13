@@ -51,6 +51,9 @@ struct SettingsView: View {
                 NavigationLink(value: "Shelf") {
                     Label("Shelf", systemImage: "books.vertical")
                 }
+                NavigationLink(value: "Clipboard") {
+                    Label("Clipboard", systemImage: "clipboard")
+                }
                 NavigationLink(value: "Shortcuts") {
                     Label("Shortcuts", systemImage: "keyboard")
                 }
@@ -85,6 +88,8 @@ struct SettingsView: View {
                     Charge()
                 case "Shelf":
                     Shelf()
+                case "Clipboard":
+                    ClipboardSettings()
                 case "Shortcuts":
                     Shortcuts()
                 case "Extensions":
@@ -692,6 +697,16 @@ struct Media: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            Section {
+                QuickLaunchAppsSettingsView()
+            } header: {
+                Text("Quick launch apps")
+            } footer: {
+                Text("Choose which music apps appear in the quick launch grid when no music is playing.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .accentColor(.effectiveAccent)
         .navigationTitle("Media")
@@ -703,6 +718,75 @@ struct Media: View {
             return MediaControllerType.allCases.filter { $0 != .nowPlaying }
         } else {
             return MediaControllerType.allCases
+        }
+    }
+}
+
+struct QuickLaunchAppsSettingsView: View {
+    @Default(.hiddenQuickLaunchApps) private var hiddenQuickLaunchApps
+
+    private var availableApps: [MusicApp] {
+        var result: [MusicApp] = []
+        var coveredNames: Set<String> = []
+        for app in knownMusicApps {
+            switch app.launchType {
+            case .native(let bundleID):
+                if NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) != nil {
+                    result.append(app)
+                    coveredNames.insert(app.name)
+                }
+            case .web:
+                if !coveredNames.contains(app.name) {
+                    result.append(app)
+                }
+            }
+        }
+        return result
+    }
+
+    private let maxVisibleApps = 3
+
+    private var enabledCount: Int {
+        availableApps.filter { !hiddenQuickLaunchApps.contains($0.id) }.count
+    }
+
+    var body: some View {
+        ForEach(availableApps) { app in
+            let isEnabled = !hiddenQuickLaunchApps.contains(app.id)
+            let atLimit = enabledCount >= maxVisibleApps && !isEnabled
+            Toggle(isOn: Binding(
+                get: { isEnabled },
+                set: { isVisible in
+                    if isVisible {
+                        hiddenQuickLaunchApps.removeAll { $0 == app.id }
+                    } else {
+                        hiddenQuickLaunchApps.append(app.id)
+                    }
+                }
+            )) {
+                HStack(spacing: 8) {
+                    appIcon(for: app)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                    Text(app.name)
+                }
+            }
+            .disabled(atLimit)
+        }
+        if enabledCount >= maxVisibleApps {
+            Text("Maximum of \(maxVisibleApps) apps can be shown at a time.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func appIcon(for app: MusicApp) -> Image {
+        switch app.launchType {
+        case .native(let bundleID):
+            return AppIcon(for: bundleID)
+        case .web(_, let assetIcon):
+            return Image(assetIcon)
         }
     }
 }
@@ -906,6 +990,37 @@ struct About: View {
             CheckForUpdatesView(updater: updaterController.updater)
         }
         .navigationTitle("About")
+    }
+}
+
+struct ClipboardSettings: View {
+    @Default(.enableClipboardHistory) var enableClipboardHistory
+
+    var body: some View {
+        Form {
+            Section {
+                Defaults.Toggle(key: .enableClipboardHistory) {
+                    Text("Enable clipboard history")
+                }
+                Text("Monitors your clipboard and keeps the last 50 copied items accessible from the notch.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } header: {
+                Text("General")
+            }
+
+            Section {
+                Button(role: .destructive) {
+                    ClipboardHistoryManager.shared.clearAll()
+                } label: {
+                    Text("Clear Clipboard History")
+                }
+            } header: {
+                Text("Data")
+            }
+        }
+        .accentColor(.effectiveAccent)
+        .navigationTitle("Clipboard")
     }
 }
 
