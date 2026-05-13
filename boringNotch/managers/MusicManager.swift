@@ -14,6 +14,7 @@ let defaultImage: NSImage = .init(
     accessibilityDescription: "Album Art"
 )!
 
+@MainActor
 class MusicManager: ObservableObject {
     // MARK: - Properties
     static let shared = MusicManager()
@@ -105,7 +106,7 @@ class MusicManager: ObservableObject {
     }
 
     deinit {
-        destroy()
+        // Singleton is never deallocated; cleanup is done via destroy() from app lifecycle (e.g. boringNotchApp).
     }
     
     public func destroy() {
@@ -191,7 +192,6 @@ class MusicManager: ObservableObject {
     }
 
     // MARK: - Update Methods
-    @MainActor
     private func updateFromPlaybackState(_ state: PlaybackState) {
         // Check for playback state changes (playing/paused)
         if state.isPlaying != self.isPlaying {
@@ -355,10 +355,8 @@ class MusicManager: ObservableObject {
     // MARK: - Lyrics
     private func fetchLyricsIfAvailable(bundleIdentifier: String?, title: String, artist: String) {
         guard Defaults[.enableLyrics], !title.isEmpty else {
-            DispatchQueue.main.async {
-                self.isFetchingLyrics = false
-                self.currentLyrics = ""
-            }
+            self.isFetchingLyrics = false
+            self.currentLyrics = ""
             return
         }
 
@@ -422,7 +420,6 @@ class MusicManager: ObservableObject {
             .replacingOccurrences(of: "\u{FFFD}", with: "")
     }
 
-    @MainActor
     private func fetchLyricsFromWeb(title: String, artist: String) async {
         let cleanTitle = normalizedQuery(title)
         let cleanArtist = normalizedQuery(artist)
@@ -553,7 +550,7 @@ class MusicManager: ObservableObject {
             debounceIdleTask?.cancel()
         } else {
             debounceIdleTask?.cancel()
-            debounceIdleTask = Task { [weak self] in
+            debounceIdleTask = Task { @MainActor [weak self] in
                 guard let self = self else { return }
                 try? await Task.sleep(for: .seconds(Defaults[.waitInterval]))
                 withAnimation {
