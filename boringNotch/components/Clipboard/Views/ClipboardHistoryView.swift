@@ -35,7 +35,7 @@ struct ClipboardHistoryView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(manager.items) { item in
-                        ClipboardItemCard(item: item)
+                        ClipboardItemCard(item: item, manager: manager)
                             .onTapGesture {
                                 manager.copyToClipboard(item)
                             }
@@ -67,6 +67,7 @@ struct ClipboardHistoryView: View {
 
 private struct ClipboardItemCard: View {
     let item: ClipboardItem
+    let manager: ClipboardHistoryManager
     @State private var copied = false
 
     var body: some View {
@@ -78,8 +79,8 @@ private struct ClipboardItemCard: View {
                     .lineLimit(4)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(.primary)
-            case .image(let data):
-                if let nsImage = NSImage(data: data) {
+            case .imageFile:
+                if let nsImage = manager.cachedImage(for: item) {
                     Image(nsImage: nsImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)

@@ -16,8 +16,30 @@ final class ClipboardHistoryManager: ObservableObject {
     private var pollTimer: Timer?
     private let maxItems = 50
     private var enabledCancellable: AnyCancellable?
+    private var saveTask: Task<Void, Never>?
+
+    /// Bundle IDs of password managers and sensitive apps whose clipboard content should not be captured.
+    private let excludedBundleIDs: Set<String> = [
+        "com.1password.1password",
+        "com.agilebits.onepassword-osx",
+        "com.agilebits.onepassword7",
+        "com.1password.browser-support",
+        "com.bitwarden.desktop",
+        "com.lastpass.LastPass",
+        "com.dashlane.Dashlane",
+        "org.keepassxc.keepassxc",
+        "io.enpass.Enpass",
+        "com.callpod.keeperFill",
+        "com.nordpass.macos.NordPass",
+        "com.siber.roboform",
+        "com.apple.keychainaccess",
+    ]
+
+    /// Cache for decoded images to avoid repeated disk reads
+    private let imageCache = NSCache<NSString, NSImage>()
 
     private init() {
+        imageCache.countLimit = 20
         items = ClipboardPersistenceService.shared.load()
         changeCount = NSPasteboard.general.changeCount
 
@@ -53,6 +75,25 @@ final class ClipboardHistoryManager: ObservableObject {
         pollTimer = nil
     }
 
+    // MARK: - Image Cache
+
+    func cachedImage(for item: ClipboardItem) -> NSImage? {
+        guard let filename = item.imageFilename else { return nil }
+        let cacheKey = filename as NSString
+
+        if let cached = imageCache.object(forKey: cacheKey) {
+            return cached
+        }
+
+        guard let data = ClipboardPersistenceService.shared.loadImage(filename: filename),
+              let image = NSImage(data: data) else { return nil }
+
+        imageCache.setObject(image, forKey: cacheKey)
+        return image
+    }
+
+    // MARK: - Pasteboard Monitoring
+
     private func checkPasteboard() {
         let pasteboard = NSPasteboard.general
         let currentCount = pasteboard.changeCount
@@ -61,45 +102,82 @@ final class ClipboardHistoryManager: ObservableObject {
 
         let appBundleID = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
 
+        if let bundleID = appBundleID {
+            if excludedBundleIDs.contains(bundleID) {
+                return
+            }
+            let lowercased = bundleID.lowercased()
+            if lowercased.contains("password") || lowercased.contains("keychain") || lowercased.contains("vault") {
+                return
+            }
+        }
+
         // Try text first
         if let string = pasteboard.string(forType: .string), !string.isEmpty {
-            let kind = ClipboardItem.ClipboardItemKind.text(string)
             if case .text(let existing) = items.first?.kind, existing == string {
-                return // duplicate
+                return
             }
-            let item = ClipboardItem(id: UUID(), kind: kind, appBundleID: appBundleID, createdAt: Date())
+            let item = ClipboardItem(id: UUID(), kind: .text(string), appBundleID: appBundleID, createdAt: Date())
             addItem(item)
             return
         }
 
         // Try image (PNG then TIFF)
         if let imageData = pasteboard.data(forType: .png) ?? tiffToPNGData(pasteboard.data(forType: .tiff)) {
-            // Cap at ~2MB
             let cappedData = imageData.count > 2_000_000 ? downscaleImageData(imageData) : imageData
-            if case .image(let existing) = items.first?.kind, existing == cappedData {
-                return // duplicate
+
+            // Deduplicate: compare against most recent image file
+            if let lastFilename = items.first?.imageFilename,
+               let lastData = ClipboardPersistenceService.shared.loadImage(filename: lastFilename),
+               lastData == cappedData {
+                return
             }
-            let item = ClipboardItem(id: UUID(), kind: .image(cappedData), appBundleID: appBundleID, createdAt: Date())
+
+            let filename = "\(UUID().uuidString).png"
+            ClipboardPersistenceService.shared.saveImage(cappedData, filename: filename)
+
+            // Pre-populate cache
+            if let nsImage = NSImage(data: cappedData) {
+                imageCache.setObject(nsImage, forKey: filename as NSString)
+            }
+
+            let item = ClipboardItem(id: UUID(), kind: .imageFile(filename), appBundleID: appBundleID, createdAt: Date())
             addItem(item)
         }
     }
 
+    // MARK: - Item Management
+
     private func addItem(_ item: ClipboardItem) {
         items.insert(item, at: 0)
         if items.count > maxItems {
+            let removed = Array(items.suffix(from: maxItems))
             items = Array(items.prefix(maxItems))
+            // Clean up image files for removed items
+            for old in removed {
+                if let filename = old.imageFilename {
+                    imageCache.removeObject(forKey: filename as NSString)
+                    ClipboardPersistenceService.shared.deleteImage(filename: filename)
+                }
+            }
         }
-        ClipboardPersistenceService.shared.save(items)
+        debounceSave()
     }
 
     func delete(_ item: ClipboardItem) {
         items.removeAll { $0.id == item.id }
-        ClipboardPersistenceService.shared.save(items)
+        if let filename = item.imageFilename {
+            imageCache.removeObject(forKey: filename as NSString)
+            ClipboardPersistenceService.shared.deleteImage(filename: filename)
+        }
+        debounceSave()
     }
 
     func clearAll() {
         items.removeAll()
-        ClipboardPersistenceService.shared.save(items)
+        imageCache.removeAllObjects()
+        ClipboardPersistenceService.shared.deleteAllImages()
+        debounceSave()
     }
 
     func copyToClipboard(_ item: ClipboardItem) {
@@ -108,11 +186,26 @@ final class ClipboardHistoryManager: ObservableObject {
         switch item.kind {
         case .text(let string):
             pasteboard.setString(string, forType: .string)
-        case .image(let data):
-            pasteboard.setData(data, forType: .png)
+        case .imageFile(let filename):
+            if let data = ClipboardPersistenceService.shared.loadImage(filename: filename) {
+                pasteboard.setData(data, forType: .png)
+            }
         }
-        // Update changeCount so the next poll doesn't re-capture this
         changeCount = pasteboard.changeCount
+    }
+
+    // MARK: - Debounced Persistence
+
+    private func debounceSave() {
+        saveTask?.cancel()
+        saveTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(300))
+            guard let self = self, !Task.isCancelled else { return }
+            let snapshot = self.items
+            Task.detached(priority: .utility) {
+                ClipboardPersistenceService.shared.save(snapshot)
+            }
+        }
     }
 
     // MARK: - Image Helpers

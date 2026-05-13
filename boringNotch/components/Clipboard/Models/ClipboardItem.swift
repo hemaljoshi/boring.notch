@@ -13,7 +13,7 @@ struct ClipboardItem: Identifiable, Codable, Equatable {
 
     enum ClipboardItemKind: Codable, Equatable {
         case text(String)
-        case image(Data)
+        case imageFile(String)  // filename (UUID.png), stored separately from JSON
     }
 
     var preview: String {
@@ -24,8 +24,15 @@ struct ClipboardItem: Identifiable, Codable, Equatable {
                 return String(trimmed.prefix(80)) + "..."
             }
             return trimmed
-        case .image:
+        case .imageFile:
             return "Image"
         }
+    }
+
+    var imageFilename: String? {
+        if case .imageFile(let filename) = kind {
+            return filename
+        }
+        return nil
     }
 }
