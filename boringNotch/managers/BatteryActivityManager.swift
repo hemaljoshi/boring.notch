@@ -19,6 +19,7 @@ class BatteryActivityManager {
     private var previousBatteryInfo: BatteryInfo?
     private var notificationQueue: [BatteryEvent] = []
     private var isProcessingNotifications = false
+    private let notificationQueueLock = NSLock()
 
     enum BatteryEvent {
         case powerSourceChanged(isPluggedIn: Bool)
@@ -168,28 +169,34 @@ class BatteryActivityManager {
     /// Enqueues a notification to be processed
     /// - Parameter event: The battery event
     private func enqueueNotification(_ event: BatteryEvent) {
+        notificationQueueLock.lock()
         notificationQueue.append(event)
-        processNextNotification()
+        let didDispatch = processNextNotificationLocked()
+        if !didDispatch {
+            notificationQueueLock.unlock()
+        }
     }
     
-    /// Processes the next notification in the queue
-    /// If there are no more notifications, the queue is cleared
-    /// and the processing flag is set to false
-    private func processNextNotification() {
-        guard !isProcessingNotifications, !notificationQueue.isEmpty else { return }
+    /// Processes the next notification in the queue. Caller must hold notificationQueueLock.
+    /// - Returns: true if work was dispatched (caller must not unlock); false if guard failed (caller must unlock).
+    private func processNextNotificationLocked() -> Bool {
+        guard !isProcessingNotifications, !notificationQueue.isEmpty else { return false }
         isProcessingNotifications = true
-        
         let event = notificationQueue.removeFirst()
+        notificationQueueLock.unlock()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.notifyObservers(event: event)
+            self.notificationQueueLock.lock()
             self.isProcessingNotifications = false
-            
-            // Check if there are more items in the queue
-            if !self.notificationQueue.isEmpty {
-                self.processNextNotification()
+            let hasMore = !self.notificationQueue.isEmpty
+            if hasMore {
+                _ = self.processNextNotificationLocked()  // unlocks before dispatching
+            } else {
+                self.notificationQueueLock.unlock()
             }
         }
+        return true
     }
     
     /// Initializes the battery information when the manager starts
