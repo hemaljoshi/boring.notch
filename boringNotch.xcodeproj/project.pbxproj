@@ -104,7 +104,6 @@
 		14D570CB2C5F4B2C0011E668 /* BatteryStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D570CA2C5F4B2C0011E668 /* BatteryStatusViewModel.swift */; };
 		14D570CD2C5F4BB70011E668 /* BoringBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D570CC2C5F4BB70011E668 /* BoringBattery.swift */; };
 		14D570D22C5F6C6A0011E668 /* BoringExtrasMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D570D12C5F6C6A0011E668 /* BoringExtrasMenu.swift */; };
-		14E9FEAA2C70BF610062E83F /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E9FEA92C70BF610062E83F /* DownloadView.swift */; };
 		14E9FEAE2C7325770062E83F /* Button+Bouncing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E9FEAD2C7325770062E83F /* Button+Bouncing.swift */; };
 		14FC6E502C7DED5600C7BEA5 /* DataTypes+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14FC6E4F2C7DED5600C7BEA5 /* DataTypes+Extensions.swift */; };
 		1CDC7E1276BE086A75E0698E /* ClipboardHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56AD0EB3513FE9C8F365F12 /* ClipboardHistoryView.swift */; };
@@ -147,6 +146,14 @@
 		B1F747F92EC7E94000F841DB /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F747F82EC7E94000F841DB /* LottieView.swift */; };
 		B1FEB4992C7686630066EBBC /* PanGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEB4982C7686630066EBBC /* PanGesture.swift */; };
 		F38DE6482D8243E7008B5C6D /* BatteryActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */; };
+		BE162A42EB0D85DE2900D607 /* MusicPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E20FA5F593E11469B07DB /* MusicPlayerView.swift */; };
+		27032F611949AAE5A9393DB4 /* MusicControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A749D1ACE344DFA60E60E0B8 /* MusicControlsView.swift */; };
+		573725BE8D39EAC27415EAEC /* VolumeControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534C0565C0CAF257AB8295BB /* VolumeControlView.swift */; };
+		848B5097291AA24DA296A32B /* NoMusicPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8625F198FED339FE308A8984 /* NoMusicPlayingView.swift */; };
+		68DEFD79BF3A8B0C82F532BA /* MusicSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE661EFFEB0558A87CB5FE4F /* MusicSliderView.swift */; };
+		E32249372B715046BEBC10DD /* HUDSetupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CDEBAAF54B3B80E09743624 /* HUDSetupManager.swift */; };
+		E9218989B55A6625EE25A0D5 /* BoringViewCoordinator+SneakPeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA31F21720E4CA606CFF449F /* BoringViewCoordinator+SneakPeek.swift */; };
+		804260C8CFAF2A569E958435 /* BoringViewCoordinator+ExpandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52961759421E349566BDE5F7 /* BoringViewCoordinator+ExpandingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -277,7 +284,6 @@
 		14D570CA2C5F4B2C0011E668 /* BatteryStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStatusViewModel.swift; sourceTree = "<group>"; };
 		14D570CC2C5F4BB70011E668 /* BoringBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoringBattery.swift; sourceTree = "<group>"; };
 		14D570D12C5F6C6A0011E668 /* BoringExtrasMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoringExtrasMenu.swift; sourceTree = "<group>"; };
-		14E9FEA92C70BF610062E83F /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
 		14E9FEAD2C7325770062E83F /* Button+Bouncing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button+Bouncing.swift"; sourceTree = "<group>"; };
 		14FC6E4F2C7DED5600C7BEA5 /* DataTypes+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataTypes+Extensions.swift"; sourceTree = "<group>"; };
 		507266DA2C908E2E00A2D00D /* HoverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverButton.swift; sourceTree = "<group>"; };
@@ -317,6 +323,14 @@
 		B1FEB4982C7686630066EBBC /* PanGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanGesture.swift; sourceTree = "<group>"; };
 		F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryActivityManager.swift; sourceTree = "<group>"; };
 		F56AD0EB3513FE9C8F365F12 /* ClipboardHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryView.swift; sourceTree = "<group>"; };
+		570E20FA5F593E11469B07DB /* MusicPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerView.swift; sourceTree = "<group>"; };
+		A749D1ACE344DFA60E60E0B8 /* MusicControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicControlsView.swift; sourceTree = "<group>"; };
+		534C0565C0CAF257AB8295BB /* VolumeControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeControlView.swift; sourceTree = "<group>"; };
+		8625F198FED339FE308A8984 /* NoMusicPlayingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoMusicPlayingView.swift; sourceTree = "<group>"; };
+		CE661EFFEB0558A87CB5FE4F /* MusicSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSliderView.swift; sourceTree = "<group>"; };
+		3CDEBAAF54B3B80E09743624 /* HUDSetupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDSetupManager.swift; sourceTree = "<group>"; };
+		EA31F21720E4CA606CFF449F /* BoringViewCoordinator+SneakPeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoringViewCoordinator+SneakPeek.swift"; sourceTree = "<group>"; };
+		52961759421E349566BDE5F7 /* BoringViewCoordinator+ExpandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoringViewCoordinator+ExpandingView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -557,6 +571,7 @@
 				14C08BB52C8DE42D000F8AA0 /* CalendarManager.swift */,
 				B1F0A0012E60000100000001 /* BrightnessManager.swift */,
 				59D8C23B2E589FAA00147B33 /* VolumeManager.swift */,
+				3CDEBAAF54B3B80E09743624 /* HUDSetupManager.swift */,
 			);
 			path = managers;
 			sourceTree = "<group>";
@@ -623,6 +638,8 @@
 				14CEF41B2C5CAED400855D72 /* Preview Content */,
 				112FB72F2CCF12CC0015238C /* private */,
 				11CC44A12CEE614100C7244B /* BoringViewCoordinator.swift */,
+				EA31F21720E4CA606CFF449F /* BoringViewCoordinator+SneakPeek.swift */,
+				52961759421E349566BDE5F7 /* BoringViewCoordinator+ExpandingView.swift */,
 			);
 			path = boringNotch;
 			sourceTree = "<group>";
@@ -766,6 +783,11 @@
 			children = (
 				B19424082CD0FEFE003E5DC2 /* LottieAnimationView.swift */,
 				147163972C5D35B70068B555 /* MusicVisualizer.swift */,
+				570E20FA5F593E11469B07DB /* MusicPlayerView.swift */,
+				A749D1ACE344DFA60E60E0B8 /* MusicControlsView.swift */,
+				534C0565C0CAF257AB8295BB /* VolumeControlView.swift */,
+				8625F198FED339FE308A8984 /* NoMusicPlayingView.swift */,
+				CE661EFFEB0558A87CB5FE4F /* MusicSliderView.swift */,
 			);
 			path = Music;
 			sourceTree = "<group>";
@@ -804,7 +826,6 @@
 				B1C974332C642B6D0000E707 /* MarqueeTextView.swift */,
 				B1D365CD2C6A979C0047BDBC /* LiveActivityModifier.swift */,
 				B1D365CF2C6A9A6C0047BDBC /* SystemEventIndicatorModifier.swift */,
-				14E9FEA92C70BF610062E83F /* DownloadView.swift */,
 				B172AABF2C95DA0B001623F1 /* InlineHUD.swift */,
 			);
 			path = "Live activities";
@@ -1038,7 +1059,6 @@
 				1153BD8F2D986B1F00979FB0 /* MediaControllerProtocol.swift in Sources */,
 				9AB0C6BD2C73C9CB00F7CD30 /* NotchHomeView.swift in Sources */,
 				B172AAC02C95DA0B001623F1 /* InlineHUD.swift in Sources */,
-				14E9FEAA2C70BF610062E83F /* DownloadView.swift in Sources */,
 				B1B112912C6A572100093D8F /* EditPanelView.swift in Sources */,
 				B1C4489B2C97376A001F0858 /* TipStore.swift in Sources */,
 				1153BD912D986DB300979FB0 /* PlaybackState.swift in Sources */,
@@ -1100,6 +1120,14 @@
 				38A7005CC2DA3BF5447C36FE /* ClipboardPersistenceService.swift in Sources */,
 				31D28D89051D0236F4385568 /* ClipboardHistoryManager.swift in Sources */,
 				1CDC7E1276BE086A75E0698E /* ClipboardHistoryView.swift in Sources */,
+				BE162A42EB0D85DE2900D607 /* MusicPlayerView.swift in Sources */,
+				27032F611949AAE5A9393DB4 /* MusicControlsView.swift in Sources */,
+				573725BE8D39EAC27415EAEC /* VolumeControlView.swift in Sources */,
+				848B5097291AA24DA296A32B /* NoMusicPlayingView.swift in Sources */,
+				68DEFD79BF3A8B0C82F532BA /* MusicSliderView.swift in Sources */,
+				E32249372B715046BEBC10DD /* HUDSetupManager.swift in Sources */,
+				E9218989B55A6625EE25A0D5 /* BoringViewCoordinator+SneakPeek.swift in Sources */,
+				804260C8CFAF2A569E958435 /* BoringViewCoordinator+ExpandingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
