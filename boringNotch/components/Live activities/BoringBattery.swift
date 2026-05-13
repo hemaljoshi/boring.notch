@@ -265,3 +265,38 @@ struct BoringBatteryView: View {
         isForNotification: false
     ).frame(width: 200, height: 200)
 }
+
+/// Extracted from ContentView to avoid subscribing to BatteryStatusViewModel at the top level.
+/// Only re-evaluates when battery properties change, not on every MusicManager/coordinator update.
+struct BatteryNotificationView: View {
+    @ObservedObject private var batteryModel = BatteryStatusViewModel.shared
+    let closedNotchWidth: CGFloat
+    let closedNotchHeight: CGFloat
+
+    var body: some View {
+        HStack(spacing: 0) {
+            HStack {
+                Text(batteryModel.statusText)
+                    .font(.subheadline)
+                    .foregroundStyle(.white)
+            }
+
+            Rectangle()
+                .fill(.black)
+                .frame(width: closedNotchWidth + 10)
+
+            HStack {
+                BoringBatteryView(
+                    batteryWidth: 30,
+                    isCharging: batteryModel.isCharging,
+                    isInLowPowerMode: batteryModel.isInLowPowerMode,
+                    isPluggedIn: batteryModel.isPluggedIn,
+                    levelBattery: batteryModel.levelBattery,
+                    isForNotification: true
+                )
+            }
+            .frame(width: 76, alignment: .trailing)
+        }
+        .frame(height: closedNotchHeight, alignment: .center)
+    }
+}
