@@ -77,3 +77,17 @@ Sparkle (auto-updates), LaunchAtLogin, Defaults (UserDefaults wrapper), Keyboard
 ### Window Management
 
 The app creates one notch window per connected display, tracked by screen UUID (`NSScreen+UUID.swift`). Supports automatic display switching and lock screen visibility.
+
+## Code Review Tracker
+
+A full project review was conducted (2026-02-01). Two reference files exist at the project root:
+
+- **`REVIEW_TRACKER.md`** — Actionable checklist of all findings (P0-P3) with checkboxes. Read this first to see what's pending.
+- **`REVIEW_REPORT.md`** — Full detailed analysis with architecture narrative, code snippets, performance calculations, security deep-dives, and singleton thread-safety tables. Read this when you need context for a specific fix.
+
+When working on fixes:
+1. Read `REVIEW_TRACKER.md` to find the next pending item
+2. Read the relevant section in `REVIEW_REPORT.md` for detailed context
+3. Implement the fix
+4. Build-verify with `xcodebuild -scheme boringNotch -configuration Debug build`
+5. Mark the item `[x]` in `REVIEW_TRACKER.md`
